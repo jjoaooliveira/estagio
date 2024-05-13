@@ -12,8 +12,15 @@ app.add_middleware(
     allow_origins=['http://localhost:3000']
 )
 
+@app.post('')
+async def postdata():
+    return
+
 @app.get('/teste')
-async def teste():
+async def getalldata() -> dict[str, list]:
+    """
+    Retorna todos os dados de carros do banco
+    """
     database: DataBase = DataBase()
     database.cursor.execute(
         """
@@ -21,7 +28,15 @@ async def teste():
         """
     )
     data: list = database.cursor.fetchall()
-    return {'dados': data}
+    templist: list = list()
+    for item in data:
+        templist.append({'id': item[0], 'modelo': item[2], 'cor': item[3]})
+        
+    return {'dados': templist}
+
+    """
+    CRUD
+    """
 
 if __name__ == '__main__':
     uvicorn.run(app=app, host='0.0.0.0', port=7777)
