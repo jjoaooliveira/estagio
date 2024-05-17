@@ -2,6 +2,13 @@ from database.database import DataBase
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+from pydantic import BaseModel
+
+class Carro(BaseModel):
+    id: int | None = None
+    modelo: str
+    cor: str
+    ano: str
 
 app: FastAPI = FastAPI()
 app.add_middleware(
@@ -12,31 +19,48 @@ app.add_middleware(
     allow_origins=['http://localhost:3000']
 )
 
-@app.post('')
-async def postdata():
+database: DataBase = DataBase()
+
+@app.delete('/carro/delete/{item_id}')
+async def deletedata(item_id):
+    database.delete(item_id)
     return
 
-@app.get('/teste')
-async def getalldata() -> dict[str, list]:
-    """
-    Retorna todos os dados de carros do banco
-    """
-    database: DataBase = DataBase()
-    database.cursor.execute(
-        """
-        SELECT * FROM carro;
-        """
-    )
-    data: list = database.cursor.fetchall()
-    templist: list = list()
-    for item in data:
-        templist.append({'id': item[0], 'modelo': item[2], 'cor': item[3]})
-        
-    return {'dados': templist}
+@app.put('/carro/update')
+async def putdata(carro: Carro):
+    database.updateData(carro)
+    return carro
 
+
+@app.post('/carro/create')
+async def postdata(carro: Carro):
+    database.insert(carro)
+    return carro
+
+
+@app.get('/carro/{item_id}')
+async def getOneData(item_id):
     """
-    CRUD
+    Retorna dados do carro de id = item_id
     """
+    data = database.getOne(item_id)
+    return {'data': [data]}
+
+
+@app.get('/carro')
+async def getAllData() -> dict[str, list]:
+    """
+    Retorna dados de carros do banco
+    """
+    data = database.getAll()
+    return {'dados': data}
+        
 
 if __name__ == '__main__':
-    uvicorn.run(app=app, host='0.0.0.0', port=7777)
+    try:
+        uvicorn.run(app=app, host='0.0.0.0', port=7777)
+    except Exception as err:
+        print(err)
+    finally:
+        print('Finanlizando seriviço...')
+        database.close()

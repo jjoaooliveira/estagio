@@ -2,6 +2,8 @@ import psycopg2
 from configparser import ConfigParser
 
 class DataBase:
+    """
+    """
     __filename='backend\\database\\database.ini'
     __section='postgresql'
 
@@ -10,59 +12,129 @@ class DataBase:
         parser.read(self.__filename)
 
         # get section, default to postgresql
-        config = {}
+        self.__config = {}
         if parser.has_section(self.__section):
             params = parser.items(self.__section)
 
             for param in params:
-                config[param[0]] = param[1]
-            
-            # connecting to the PostgreSQL server
-            with psycopg2.connect(**config) as conn:
-                print('Connected to the PostgreSQL server.')
-                self.cursor = conn.cursor()
+                self.__config[param[0]] = param[1]
+
+            self.conn = psycopg2.connect(**self.__config)
+            print('Connected to the PostgreSQL server.')
         else:
             raise Exception('Section {0} not found in the {1} file'.format(self.__section, self.__filename))
-        
-        # with psycopg2.connect(**config) as conn:
-        #     print('Connected to the PostgreSQL server.')
-        #     connection = conn
-        
+            
 
-    # def __load_config(filename='backend\\database\\database.ini', section='postgresql'):
-        # parser = ConfigParser()
-        # parser.read(filename)
-        
-        # # get section, default to postgresql
-        # config = {}
-        # if parser.has_section(section):
-        #     params = parser.items(section)
-        #     for param in params:
-        #         config[param[0]] = param[1]
-        # else:
-        #     raise Exception('Section {0} not found in the {1} file'.format(section, filename))
+    def close(self) -> None:
+        """
+        """
+        self.conn.close()
+        return
 
-        # print(config)
-        # return config
 
-    # def __connect(self):
-        """ Connect to the PostgreSQL database server """
-        # try:
-        #     config: dict = self.__load_config()
-        #     # connecting to the PostgreSQL server
-        #     with psycopg2.connect(**config) as conn:
-        #         print('Connected to the PostgreSQL server.')
-        #         return conn
-        # except (psycopg2.DatabaseError, Exception) as error:
-        #     print(error)
-        
+    def updateData(self, model) -> None:
+        """
+        """
+        with self.conn as connection:
+            with connection.cursor() as cur:
+                cur.execute(
+                    """
+                    UPDATE carro
+                    set modelo = %s, cor = %s, ano = %s
+                    WHERE id = %s;
+                    """,
+                    (model.modelo, model.cor, model.ano, model.id)
+                )
+        return
+
+
+    def getAll(self) -> list:
+        """
+        """
+        with self.conn as connection:
+            with connection.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT * FROM carro;
+                    """
+                )
+                data: list = cur.fetchall()
+
+                templist: list = list()
+                for item in data:
+                    templist.append({
+                        'id': item[0],
+                        'modelo': item[2], 
+                        'cor': item[1], 
+                        'ano': item[3]
+                    })
+                    
+        return templist
+
+
+    def getOne(self, dataId) -> dict:
+        """
+        """
+
+        with self.conn as connection:
+            with connection.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT * FROM carro
+                    WHERE id = %s;
+                    """,
+                    (dataId)
+                )
+                data: tuple = cur.fetchone()
+                
+                dataDict: dict = dict()
+                dataDict['id'] = data[0]
+                dataDict['cor'] = data[1]
+                dataDict['modelo'] = data[2]
+                dataDict['ano'] = data[3]
+
+        return dataDict
+    
+
+    def insert(self, model) -> None:
+        """
+        """
+        with self.conn as connection:
+            with connection.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO carro(modelo, cor, ano) 
+                    VALUES(%s, %s, %s);
+                    """,
+                    (model.modelo, model.cor, model.ano)
+                )
+        return
+    
+    
+    def delete(self, id) -> None:
+        """
+        """
+        with self.conn as connection:
+            with connection.cursor() as cur:
+                cur.execute(
+                    """
+                    DELETE FROM carro
+                    WHERE id = %s;
+                    """,
+                    (id)
+                )
+        return
 
 
 if __name__ == '__main__':
     database: DataBase = DataBase()
-    database.cursor.execute(
-        """
-        SELECT * FROM carro;
-        """
-    )
-    print(database.cursor.fetchall())
+
+    with database.conn as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT * FROM carro;
+                """
+            )
+            print(cur.fetchall())
+    database.close()

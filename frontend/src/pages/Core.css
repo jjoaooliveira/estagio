@@ -1,0 +1,59 @@
+.container-core {
+    max-width: 90vw;
+    margin: 1rem auto;
+    display: grid;
+    grid-template-columns: 2fr .5fr;
+    grid-auto-rows: minmax(140px, auto);
+    gap: .8rem;
+}
+
+.hero {
+    border-radius: .5rem;
+}
+
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.data-container {
+    display: flex;
+    row-gap: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.data {
+    width: 280px;
+    height: 6rem;
+    border-bottom: 5px solid;
+    font-size: 1.5rem;
+    display: flex;
+    padding: .5rem;
+}
+
+.data:hover {
+    background-color: rgb(0, 0, 0);
+    color: white;
+    border-bottom: 5px solid rgb(1, 145, 255);
+}
+
+.backend-status {
+    border: 1px solid black;
+    border-radius: .5rem;
+    grid-column-start: 2;
+    grid-row-start: 1;
+    grid-row-end: 2;
+}
+
+.logs {
+    border: 1px solid black;
+    border-radius: .5rem;
+    grid-column-start: 2;
+    grid-row-start: 2;
+    max-height: 220px;
+}
