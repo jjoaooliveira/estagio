@@ -12,10 +12,10 @@
   gap: .5rem;
 }
 
-.nav-buttons {
-  margin-left: 4.5rem;
+.navbar-buttons {
   display: flex;
   gap: .5rem;
+  margin-left: 5vw;
 }
 
 .navbar-button {

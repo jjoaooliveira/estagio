@@ -4,13 +4,13 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from pydantic import BaseModel
 
-class Carro(BaseModel):
+class Carro(BaseModel): # modelo de dados
     id: int | None = None
     modelo: str
     cor: str
     ano: str
 
-app: FastAPI = FastAPI()
+app: FastAPI = FastAPI() # cria nova instancia da classe do servico API
 app.add_middleware(
     CORSMiddleware,
     allow_methods=['*'],
@@ -19,21 +19,30 @@ app.add_middleware(
     allow_origins=['http://localhost:3000']
 )
 
-database: DataBase = DataBase()
+database: DataBase = DataBase() # cria nova instancia da classe de conexao
 
 @app.delete('/carro/delete/{item_id}')
 async def deletedata(item_id):
+    """
+    Função que escuta método http DELETE
+    """
     database.delete(item_id)
     return
 
 @app.put('/carro/update')
 async def putdata(carro: Carro):
+    """
+    Função que escuta método http PUT
+    """
     database.updateData(carro)
     return carro
 
 
 @app.post('/carro/create')
 async def postdata(carro: Carro):
+    """
+    Função que escuta método http POST
+    """
     database.insert(carro)
     return carro
 
@@ -41,7 +50,7 @@ async def postdata(carro: Carro):
 @app.get('/carro/{item_id}')
 async def getOneData(item_id):
     """
-    Retorna dados do carro de id = item_id
+    Função que escuta o método http GET e retorna dados do carro de id = item_id
     """
     data = database.getOne(item_id)
     return {'data': [data]}
@@ -50,7 +59,7 @@ async def getOneData(item_id):
 @app.get('/carro')
 async def getAllData() -> dict[str, list]:
     """
-    Retorna dados de carros do banco
+    Função que escuta o método http GET e retorna dados da tabela carro
     """
     data = database.getAll()
     return {'dados': data}

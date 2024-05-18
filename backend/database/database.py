@@ -3,13 +3,14 @@ from configparser import ConfigParser
 
 class DataBase:
     """
+    Classe de conexão com o banco de dados
     """
-    __filename='backend\\database\\database.ini'
+    __filepath='backend\\database\\database.ini'
     __section='postgresql'
 
     def __init__(self) -> None:
         parser = ConfigParser()
-        parser.read(self.__filename)
+        parser.read(self.__filepath)
 
         # get section, default to postgresql
         self.__config = {}
@@ -22,11 +23,12 @@ class DataBase:
             self.conn = psycopg2.connect(**self.__config)
             print('Connected to the PostgreSQL server.')
         else:
-            raise Exception('Section {0} not found in the {1} file'.format(self.__section, self.__filename))
+            raise Exception('Section {0} not found in the {1} file'.format(self.__section, self.__filepath))
             
 
     def close(self) -> None:
         """
+        Método para fechar a conexão
         """
         self.conn.close()
         return
@@ -34,6 +36,8 @@ class DataBase:
 
     def updateData(self, model) -> None:
         """
+        Método que executa insctrução sql 'UPDATE'
+        a partir de um OBJETO recebido como parâmetro 
         """
         with self.conn as connection:
             with connection.cursor() as cur:
@@ -50,6 +54,8 @@ class DataBase:
 
     def getAll(self) -> list:
         """
+        Método que executa insctrução sql 'SELECT'
+        retornando todos os dados da tabela carro 
         """
         with self.conn as connection:
             with connection.cursor() as cur:
@@ -74,6 +80,8 @@ class DataBase:
 
     def getOne(self, dataId) -> dict:
         """
+        Método que executa insctrução sql 'SELECT...WHERE'
+        a partir de um ID recebido como parâmetro 
         """
 
         with self.conn as connection:
@@ -98,6 +106,8 @@ class DataBase:
 
     def insert(self, model) -> None:
         """
+        Método que executa insctrução sql 'INSERT'
+        a partir de um OBJETO recebido como parâmetro 
         """
         with self.conn as connection:
             with connection.cursor() as cur:
@@ -113,6 +123,8 @@ class DataBase:
     
     def delete(self, id) -> None:
         """
+        Método que executa insctrução sql 'DELETE...WHERE'
+        a partir de um ID recebido como parâmetro  
         """
         with self.conn as connection:
             with connection.cursor() as cur:

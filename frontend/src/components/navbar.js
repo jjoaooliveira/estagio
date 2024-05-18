@@ -5,11 +5,19 @@ import Button from './button'
 export default function NavBar() {
 
     return (
-        <header className="navbar">
-            <nav className="nav-buttons">
-                <Button text="Home" link="/" />
-                <Button text="Adicionar" link="/adicionar-item" />
-                <Button text="Pesquisar" link="/pesquisar" />
+        <header>
+            <nav className="navbar">
+                <ul className='navbar-buttons'>
+                    <li>
+                        <Button text="Home" link="/" />
+                    </li>
+                    <li>
+                        <Button text="Adicionar" link="/adicionar-item" />
+                    </li>
+                    <li>
+                        <Button text="Pesquisar" link="/pesquisar" />
+                    </li>
+                </ul>
             </nav>
         </header>
     )
