@@ -11,6 +11,23 @@ O banco de dados contem apenas uma tabela chamada *carro* cuja estrutura é comp
 > modelo VARCHAR  
 > cor VARCHAR  
 > ano VARCHAR
+  
+É necessário o uso de banco de dados *Postgresql*
 
 ## Implementação
 A fase de implementação envolve a codificação real do software. Os desenvolvedores escrevem o código-fonte, testam e corrigem erros à medida que avançam. O sistema foi desenvolvido utilizando a linguagem de programação python para o *backend* e e a linguagem de programação javascript para o frontend. Os frameworks utilizados foram *fastApi* e *psycopg2*, para o *backend*, e React para o *frontend*.
+
+***
+## Configuração  
+Para iniciar este projeto em ambiente local é preciso instalar as dependências localizadas em arquivos package.json e requirements.txt.
+### python
+
+Para instalar as dependências python acesse o caminho ``backend/`` e digite o seguinte comando no terminal:  
+  
+`pip install -r requirements.txt`  
+
+### javascript  
+
+Para instalar as dependências python acesse o caminho ``frontend/`` e digite o seguinte comando no terminal:  
+  
+`node install`  
