@@ -12,7 +12,8 @@ O banco de dados contem apenas uma tabela chamada *carro* cuja estrutura é comp
 > cor VARCHAR  
 > ano VARCHAR
   
-É necessário o uso de banco de dados *Postgresql*
+### Postgresql
+É necessário o uso de banco de dados *Postgresql* e editar o arquivo ***database.ini*** com seu usuário, senha e banco. 
 
 ## Implementação
 A fase de implementação envolve a codificação real do software. Os desenvolvedores escrevem o código-fonte, testam e corrigem erros à medida que avançam. O sistema foi desenvolvido utilizando a linguagem de programação python para o *backend* e e a linguagem de programação javascript para o frontend. Os frameworks utilizados foram *fastApi* e *psycopg2*, para o *backend*, e React para o *frontend*.
