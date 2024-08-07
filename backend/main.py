@@ -4,22 +4,24 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from pydantic import BaseModel
 
-class Carro(BaseModel): # modelo de dados
+
+class Carro(BaseModel):  # modelo de dados
     id: int | None = None
     modelo: str
     cor: str
     ano: str
 
-app: FastAPI = FastAPI() # cria nova instancia da classe do servico API
+
+app: FastAPI = FastAPI()  # cria nova instancia da classe do servico API
 app.add_middleware(
     CORSMiddleware,
     allow_methods=['*'],
     allow_headers=['*'],
     allow_credentials=True,
-    allow_origins=['http://localhost:3000']
+    allow_origins=['*']
 )
+database: DataBase = DataBase()  # cria nova instancia da classe de conexao
 
-database: DataBase = DataBase() # cria nova instancia da classe de conexao
 
 @app.delete('/carro/delete/{item_id}')
 async def deletedata(item_id):
@@ -28,6 +30,7 @@ async def deletedata(item_id):
     """
     database.delete(item_id)
     return
+
 
 @app.put('/carro/update')
 async def putdata(carro: Carro):
@@ -48,7 +51,7 @@ async def postdata(carro: Carro):
 
 
 @app.get('/carro/{item_id}')
-async def getOneData(item_id):
+async def getOneData(item_id: str):
     """
     Função que escuta o método http GET e retorna dados do carro de id = item_id
     """

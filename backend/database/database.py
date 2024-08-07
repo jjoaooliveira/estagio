@@ -1,14 +1,15 @@
 import psycopg2
 from configparser import ConfigParser
 
+
 class DataBase:
     """
     Classe de conexão com o banco de dados
     """
-    __filepath='backend\\database\\database.ini'
-    __section='postgresql'
+    __filepath = r'database/database.ini'
+    __section = 'postgresql'
 
-    def __init__(self) -> None:
+    def __init__(self,) -> None:
         parser = ConfigParser()
         parser.read(self.__filepath)
 
@@ -25,14 +26,12 @@ class DataBase:
         else:
             raise Exception('Section {0} not found in the {1} file'.format(self.__section, self.__filepath))
             
-
     def close(self) -> None:
         """
         Método para fechar a conexão
         """
         self.conn.close()
         return
-
 
     def updateData(self, model) -> None:
         """
@@ -50,7 +49,6 @@ class DataBase:
                     (model.modelo, model.cor, model.ano, model.id)
                 )
         return
-
 
     def getAll(self) -> list:
         """
@@ -77,33 +75,29 @@ class DataBase:
                     
         return templist
 
-
-    def getOne(self, dataId) -> dict:
+    def getOne(self, dataId: str) -> dict:
         """
         Método que executa insctrução sql 'SELECT...WHERE'
         a partir de um ID recebido como parâmetro 
         """
 
         with self.conn as connection:
-            with connection.cursor() as cur:
-                cur.execute(
+            with connection.cursor() as c:
+                c.execute(
                     """
                     SELECT * FROM carro
                     WHERE id = %s;
                     """,
-                    (dataId)
+                    (dataId,)
                 )
-                data: tuple = cur.fetchone()
-                
+                data: tuple = c.fetchone()
                 dataDict: dict = dict()
                 dataDict['id'] = data[0]
                 dataDict['cor'] = data[1]
                 dataDict['modelo'] = data[2]
                 dataDict['ano'] = data[3]
-
-        return dataDict
+                return dataDict
     
-
     def insert(self, model) -> None:
         """
         Método que executa insctrução sql 'INSERT'
@@ -118,8 +112,7 @@ class DataBase:
                     """,
                     (model.modelo, model.cor, model.ano)
                 )
-        return
-    
+        return   
     
     def delete(self, id) -> None:
         """
@@ -133,20 +126,7 @@ class DataBase:
                     DELETE FROM carro
                     WHERE id = %s;
                     """,
-                    (id)
+                    (id,)
                 )
         return
 
-
-if __name__ == '__main__':
-    database: DataBase = DataBase()
-
-    with database.conn as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                """
-                SELECT * FROM carro;
-                """
-            )
-            print(cur.fetchall())
-    database.close()
